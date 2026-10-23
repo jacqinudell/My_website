@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jacqin's Website</title>
+  <style>
+    :root {
+      --black: #070707;
+      --gold: #d4af37;
+      --gold-soft: #f6e7a9;
+      --white: #f9f7f3;
+      --shadow: rgba(212, 175, 55, 0.28);
+      --panel: rgba(255, 255, 255, 0.08);
+      --border: rgba(212, 175, 55, 0.35);
+      --text-muted: rgba(255, 255, 255, 0.72);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(246, 231, 169, 0.16), transparent 28%),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 18%),
+        radial-gradient(circle at 80% 15%, rgba(212, 175, 55, 0.18), transparent 22%),
+        linear-gradient(180deg, #fefcf8 0%, #f4f1ea 18%, #090909 100%);
+      color: var(--white);
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 32px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(2px 2px at 15% 25%, rgba(255,255,255,0.9), transparent 100%),
+        radial-gradient(2px 2px at 35% 15%, rgba(212,175,55,0.9), transparent 100%),
+        radial-gradient(2px 2px at 68% 18%, rgba(255,255,255,0.8), transparent 100%),
+        radial-gradient(2px 2px at 80% 32%, rgba(212,175,55,0.8), transparent 100%),
+        radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,0.8), transparent 100%),
+        radial-gradient(2px 2px at 60% 75%, rgba(212,175,55,0.9), transparent 100%),
+        radial-gradient(2px 2px at 75% 60%, rgba(255,255,255,0.8), transparent 100%);
+      opacity: 0.9;
+    }
+
+    .card {
+      position: relative;
+      width: min(760px, 90vw);
+      padding: 48px 42px;
+      background: rgba(13, 13, 13, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 0 30px var(--shadow),
+        inset 0 0 30px rgba(212, 175, 55, 0.08);
+      backdrop-filter: blur(8px);
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      font-size: 0.78rem;
+      letter-spacing: 0.26rem;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      opacity: 0.9;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      text-shadow: 0 0 18px rgba(246, 231, 169, 0.2);
+    }
+
+    .highlight {
+      color: var(--gold-soft);
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+    }
+
+    p {
+      margin: 24px 0 0;
+      font-size: clamp(1rem, 1.7vw, 1.2rem);
+      line-height: 1.8;
+      color: var(--text-muted);
+      max-width: 62ch;
+    }
+
+    .socials {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .social-link {
+      display: inline-block;
+      padding: 10px 18px;
+      border: 1px solid rgba(212, 175, 55, 0.6);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--gold-soft);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .social-link:hover {
+      background: rgba(212, 175, 55, 0.12);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .orbit {
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(212, 175, 55, 0.18);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+    }
+
+    .orbit::before {
+      inset: 14% 18%;
+    }
+
+    .orbit::after {
+      inset: 25% 28%;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="orbit"></div>
+    <div class="eyebrow">Welcome</div>
+    <h1>Hello, my name is <span class="highlight">Jacqin</span></h1>
+    <p>
+      I am a web developer. I've been working on various projects and I am passionate about creating engaging web experiences.
+    </p>
+
+    <div class="socials">
+      <a class="social-link" href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a class="social-link" href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+      <a class="social-link" href="mailto:you@example.com" target="_blank" rel="noreferrer">Email</a>
+    </div>
+  </main>
+</body>
+</html>
