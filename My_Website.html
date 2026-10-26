@@ -191,44 +191,6 @@
       }
     }
 
-    #starfield {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .star {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--white);
-      box-shadow: 0 0 8px rgba(255,255,255,0.8);
-      opacity: 0.9;
-      animation: fall linear forwards;
-    }
-
-    .star.gold {
-      background: var(--gold-soft);
-      box-shadow: 0 0 10px rgba(246, 231, 169, 1);
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translate(0, 0) scale(0.8);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--dx), var(--dy)) scale(1.3);
-        opacity: 0;
-      }
-    }
-
     .page {
       position: relative;
       z-index: 1;
@@ -417,11 +379,7 @@
     }
   </style>
 </head>
-<<<<<<< HEAD
 <body data-theme="default">
-=======
-<body>
->>>>>>> 19eb865 (New Features)
   <div id="starfield"></div>
 
   <div class="page">
@@ -436,10 +394,10 @@
       <div class="eyebrow">Welcome</div>
       <h1>Hello, my name is <span class="highlight">Jacqin Udell</span></h1>
       <p>
-        I am a web developer. I've been working on various projects and I am passionate about creating engaging web experiences.
+        I am a web developer. I’ve been working on various projects and I am passionate about creating engaging web experiences.
       </p>
       <p>
-        I specialize in front-end development, focusing on building responsive and user-friendly websites. My goal is to combine creativity with technical skills to deliver high-quality web solutions, while also making the websites more interactive and fun for people of all ages and backgrounds to enjoy.
+        I specialize in front-end development, focusing on building responsive and user-friendly websites. My goal is to combine creativity with technical skills to deliver high-quality web solutions while also making the experience interactive and fun for people of all ages and backgrounds to enjoy.
       </p>
 
       <div class="socials">
@@ -471,7 +429,6 @@
 
   <script>
     const starfield = document.getElementById('starfield');
-<<<<<<< HEAD
     const themeButtons = document.querySelectorAll('.theme-button');
 
     function setTheme(theme) {
@@ -487,8 +444,6 @@
         setTheme(button.dataset.theme);
       });
     });
-=======
->>>>>>> 19eb865 (New Features)
 
     document.addEventListener('pointermove', (event) => {
       const count = 10;
