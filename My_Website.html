@@ -14,22 +14,30 @@
       --panel: rgba(255, 255, 255, 0.08);
       --border: rgba(212, 175, 55, 0.35);
       --text-muted: rgba(255, 255, 255, 0.72);
-      --bg-1: #fefcf8;
-      --bg-2: #f4f1ea;
-      --bg-3: #090909;
-      --card-bg: rgba(13, 13, 13, 0.72);
-      --card-border: rgba(212, 175, 55, 0.35);
-      --button-bg: rgba(255, 255, 255, 0.03);
-      --button-border: rgba(212, 175, 55, 0.6);
-      --orbital: rgba(212, 175, 55, 0.18);
-      --star-glow: rgba(246, 231, 169, 1);
-      --bg-glow-1: rgba(246, 231, 169, 0.16);
-      --bg-glow-2: rgba(212, 175, 55, 0.18);
-      --background-image:
-        radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 18%),
-        radial-gradient(circle at 80% 15%, var(--bg-glow-2), transparent 22%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background-image);
+      color: var(--white);
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 48px 32px;
+      position: relative;
+      cursor: crosshair;
+      overflow-x: hidden;
     }
 
     body[data-theme="floral"] {
@@ -84,30 +92,6 @@
         radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2), transparent 18%),
         radial-gradient(circle at 80% 15%, var(--bg-glow-2), transparent 22%),
         linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--background-image);
-      color: var(--white);
-      transition: background 0.35s ease, color 0.35s ease;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 48px 32px;
-      position: relative;
-      cursor: crosshair;
-      overflow-x: hidden;
     }
 
     body::before,
@@ -245,11 +229,7 @@
         inset 0 0 30px rgba(212, 175, 55, 0.08);
       backdrop-filter: blur(8px);
       z-index: 1;
-<<<<<<< HEAD
-      transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease, background 0.35s ease;
-=======
       transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
->>>>>>> a5f63e5 (https://github.com/jacqinudell/My_website)
     }
 
     .card:hover {
@@ -259,7 +239,6 @@
         0 0 34px rgba(212, 175, 55, 0.32),
         inset 0 0 30px rgba(212, 175, 55, 0.12);
       transform: translateY(-1px);
-<<<<<<< HEAD
     }
 
     .card:hover .highlight {
@@ -267,8 +246,6 @@
         0 0 10px rgba(246, 231, 169, 0.7),
         0 0 24px rgba(212, 175, 55, 0.5),
         0 0 42px rgba(212, 175, 55, 0.32);
-=======
->>>>>>> a5f63e5 (https://github.com/jacqinudell/My_website)
     }
 
     .eyebrow {
@@ -295,16 +272,6 @@
       color: var(--gold-soft);
       text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
       transition: text-shadow 0.25s ease;
-<<<<<<< HEAD
-=======
-    }
-
-    .card:hover .highlight {
-      text-shadow:
-        0 0 10px rgba(246, 231, 169, 0.7),
-        0 0 24px rgba(212, 175, 55, 0.5),
-        0 0 42px rgba(212, 175, 55, 0.32);
->>>>>>> a5f63e5 (https://github.com/jacqinudell/My_website)
     }
 
     p {
@@ -446,21 +413,6 @@
 
   <script>
     const starfield = document.getElementById('starfield');
-    const themeButtons = document.querySelectorAll('.theme-button');
-
-    function setTheme(theme) {
-      document.body.setAttribute('data-theme', theme);
-      themeButtons.forEach((button) => {
-        const isActive = button.dataset.theme === theme;
-        button.classList.toggle('active', isActive);
-      });
-    }
-
-    themeButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        setTheme(button.dataset.theme);
-      });
-    });
 
     document.addEventListener('pointermove', (event) => {
       const count = 10;
