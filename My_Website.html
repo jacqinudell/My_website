@@ -14,30 +14,49 @@
       --panel: rgba(255, 255, 255, 0.08);
       --border: rgba(212, 175, 55, 0.35);
       --text-muted: rgba(255, 255, 255, 0.72);
+      --bg-1: #0a0f1d;
+      --bg-2: #12192a;
+      --bg-3: #05070d;
+      --card-bg: rgba(14, 19, 30, 0.72);
+      --card-border: rgba(212, 175, 55, 0.35);
+      --button-bg: rgba(255, 255, 255, 0.04);
+      --button-border: rgba(212, 175, 55, 0.6);
+      --orbital: rgba(212, 175, 55, 0.18);
+      --star-glow: rgba(246, 231, 169, 1);
+      --bg-glow-1: rgba(212, 175, 55, 0.18);
+      --bg-glow-2: rgba(116, 138, 184, 0.12);
+      --background-image:
+        radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 16%),
+        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.18), transparent 20%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--background-image);
-      color: var(--white);
-      transition: background 0.35s ease, color 0.35s ease;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 48px 32px;
-      position: relative;
-      cursor: crosshair;
-      overflow-x: hidden;
+    body[data-theme="default"] {
+      --black: #070707;
+      --gold: #d4af37;
+      --gold-soft: #f6e7a9;
+      --white: #f9f7f3;
+      --shadow: rgba(212, 175, 55, 0.28);
+      --panel: rgba(255, 255, 255, 0.08);
+      --border: rgba(212, 175, 55, 0.35);
+      --text-muted: rgba(255, 255, 255, 0.72);
+      --bg-1: #0a0f1d;
+      --bg-2: #12192a;
+      --bg-3: #05070d;
+      --card-bg: rgba(14, 19, 30, 0.72);
+      --card-border: rgba(212, 175, 55, 0.35);
+      --button-bg: rgba(255, 255, 255, 0.04);
+      --button-border: rgba(212, 175, 55, 0.6);
+      --orbital: rgba(212, 175, 55, 0.18);
+      --star-glow: rgba(246, 231, 169, 1);
+      --bg-glow-1: rgba(212, 175, 55, 0.18);
+      --bg-glow-2: rgba(116, 138, 184, 0.12);
+      --background-image:
+        radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 16%),
+        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.18), transparent 20%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
     }
 
     body[data-theme="floral"] {
@@ -178,20 +197,23 @@
     .page {
       position: relative;
       z-index: 1;
-      width: min(760px, 90vw);
+      width: min(820px, 92vw);
       display: flex;
       flex-direction: column;
       gap: 28px;
+      align-items: center;
+      margin: 0 auto;
     }
 
     .theme-switcher {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 8px;
       z-index: 2;
       position: relative;
+      width: 100%;
     }
 
     .theme-button {
@@ -199,7 +221,7 @@
       border: 1px solid var(--button-border);
       border-radius: 999px;
       background: var(--button-bg);
-      color: #000000;
+      color: var(--gold-soft);
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -213,12 +235,13 @@
       background: rgba(212, 175, 55, 0.12);
       box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
       transform: translateY(-1px);
-      color: #000000;
+      color: var(--gold-soft);
     }
 
     .card {
       position: relative;
       width: 100%;
+      max-width: 100%;
       padding: 48px 42px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -230,6 +253,8 @@
       backdrop-filter: blur(8px);
       z-index: 1;
       transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+      text-align: center;
+      margin: 0 auto;
     }
 
     .card:hover {
@@ -256,6 +281,7 @@
       text-transform: uppercase;
       color: var(--gold-soft);
       opacity: 0.9;
+      text-align: center;
     }
 
     h1 {
@@ -266,6 +292,7 @@
       letter-spacing: 0.04em;
       color: var(--white);
       text-shadow: 0 0 18px rgba(246, 231, 169, 0.2);
+      text-align: center;
     }
 
     .highlight {
@@ -275,11 +302,12 @@
     }
 
     p {
-      margin: 24px 0 0;
+      margin: 24px auto 0;
       font-size: clamp(1rem, 1.7vw, 1.2rem);
       line-height: 1.8;
       color: var(--text-muted);
       max-width: 62ch;
+      text-align: center;
     }
 
     .socials {
@@ -287,6 +315,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
+      justify-content: center;
     }
 
     .social-link {
@@ -311,11 +340,12 @@
 
     .skills-list {
       list-style: none;
-      margin: 28px 0 0;
+      margin: 28px auto 0;
       padding: 0;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
+      max-width: 620px;
     }
 
     .skill-item {
@@ -413,6 +443,21 @@
 
   <script>
     const starfield = document.getElementById('starfield');
+    const themeButtons = document.querySelectorAll('.theme-button');
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeButtons.forEach((button) => {
+        const isActive = button.dataset.theme === theme;
+        button.classList.toggle('active', isActive);
+      });
+    }
+
+    themeButtons.forEach((button) => {
+      button.addEventListener('click', () => applyTheme(button.dataset.theme));
+    });
+
+    applyTheme('default');
 
     document.addEventListener('pointermove', (event) => {
       const count = 10;
