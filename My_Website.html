@@ -14,22 +14,38 @@
       --panel: rgba(255, 255, 255, 0.08);
       --border: rgba(212, 175, 55, 0.35);
       --text-muted: rgba(255, 255, 255, 0.72);
-      --bg-1: #0a0f1d;
-      --bg-2: #12192a;
-      --bg-3: #05070d;
-      --card-bg: rgba(14, 19, 30, 0.72);
-      --card-border: rgba(212, 175, 55, 0.35);
+      --bg-1: #0f172a;
+      --bg-2: #1d2a3d;
+      --bg-3: #050811;
+      --card-bg: rgba(18, 25, 38, 0.72);
+      --card-border: rgba(212, 175, 55, 0.42);
       --button-bg: rgba(255, 255, 255, 0.04);
-      --button-border: rgba(212, 175, 55, 0.6);
+      --button-border: rgba(212, 175, 55, 0.7);
       --orbital: rgba(212, 175, 55, 0.18);
       --star-glow: rgba(246, 231, 169, 1);
-      --bg-glow-1: rgba(212, 175, 55, 0.18);
-      --bg-glow-2: rgba(116, 138, 184, 0.12);
+      --bg-glow-1: rgba(194, 164, 84, 0.28);
+      --bg-glow-2: rgba(134, 167, 216, 0.12);
       --background-image:
         radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
-        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 16%),
-        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.18), transparent 20%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 15%),
+        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.2), transparent 22%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 22%, var(--bg-3) 100%);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 48px 32px;
+      position: relative;
+      cursor: crosshair;
+      overflow-x: hidden;
+      background-color: var(--bg-3);
+      background-image: var(--background-image);
+      background-attachment: fixed;
+      background-size: cover;
+      background-repeat: no-repeat;
     }
 
     body[data-theme="default"] {
@@ -41,22 +57,22 @@
       --panel: rgba(255, 255, 255, 0.08);
       --border: rgba(212, 175, 55, 0.35);
       --text-muted: rgba(255, 255, 255, 0.72);
-      --bg-1: #0a0f1d;
-      --bg-2: #12192a;
-      --bg-3: #05070d;
-      --card-bg: rgba(14, 19, 30, 0.72);
-      --card-border: rgba(212, 175, 55, 0.35);
+      --bg-1: #0f172a;
+      --bg-2: #1d2a3d;
+      --bg-3: #050811;
+      --card-bg: rgba(18, 25, 38, 0.72);
+      --card-border: rgba(212, 175, 55, 0.42);
       --button-bg: rgba(255, 255, 255, 0.04);
-      --button-border: rgba(212, 175, 55, 0.6);
+      --button-border: rgba(212, 175, 55, 0.7);
       --orbital: rgba(212, 175, 55, 0.18);
       --star-glow: rgba(246, 231, 169, 1);
-      --bg-glow-1: rgba(212, 175, 55, 0.18);
-      --bg-glow-2: rgba(116, 138, 184, 0.12);
+      --bg-glow-1: rgba(194, 164, 84, 0.28);
+      --bg-glow-2: rgba(134, 167, 216, 0.12);
       --background-image:
         radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
-        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 16%),
-        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.18), transparent 20%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 15%),
+        radial-gradient(circle at 82% 15%, rgba(212,175,55,0.2), transparent 22%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 22%, var(--bg-3) 100%);
     }
 
     body[data-theme="floral"] {
@@ -77,12 +93,12 @@
       --button-border: rgba(217, 138, 167, 0.7);
       --orbital: rgba(217, 138, 167, 0.2);
       --star-glow: rgba(255, 227, 239, 1);
-      --bg-glow-1: rgba(255, 215, 226, 0.32);
+      --bg-glow-1: rgba(255, 215, 226, 0.38);
       --bg-glow-2: rgba(217, 138, 167, 0.24);
       --background-image:
         radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
-        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.3), transparent 16%),
-        radial-gradient(circle at 82% 15%, rgba(217, 138, 167, 0.22), transparent 20%),
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.28), transparent 16%),
+        radial-gradient(circle at 82% 15%, rgba(217, 138, 167, 0.26), transparent 20%),
         linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
     }
 
@@ -95,20 +111,20 @@
       --panel: rgba(15, 23, 42, 0.7);
       --border: rgba(125, 211, 252, 0.42);
       --text-muted: rgba(223, 233, 240, 0.78);
-      --bg-1: #f2f7ff;
-      --bg-2: #dfeafc;
-      --bg-3: #050b14;
-      --card-bg: rgba(15, 23, 42, 0.78);
+      --bg-1: #edf6ff;
+      --bg-2: #cae7ff;
+      --bg-3: #07121d;
+      --card-bg: rgba(15, 23, 42, 0.8);
       --card-border: rgba(125, 211, 252, 0.45);
       --button-bg: rgba(148, 163, 184, 0.08);
       --button-border: rgba(125, 211, 252, 0.7);
       --orbital: rgba(125, 211, 252, 0.18);
       --star-glow: rgba(217, 243, 255, 1);
-      --bg-glow-1: rgba(191, 219, 254, 0.28);
-      --bg-glow-2: rgba(125, 211, 252, 0.18);
+      --bg-glow-1: rgba(191, 219, 254, 0.35);
+      --bg-glow-2: rgba(125, 211, 252, 0.2);
       --background-image:
-        radial-gradient(circle at top, var(--bg-glow-1), transparent 28%),
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2), transparent 18%),
+        radial-gradient(circle at top, var(--bg-glow-1), transparent 30%),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25), transparent 18%),
         radial-gradient(circle at 80% 15%, var(--bg-glow-2), transparent 22%),
         linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 18%, var(--bg-3) 100%);
     }
