@@ -246,12 +246,46 @@
       transition: all 0.2s ease;
     }
 
+    body[data-theme="default"] .theme-button,
+    body[data-theme="default"] .theme-button.active {
+      color: #d9d6d3;
+    }
+
+    body[data-theme="default"] .theme-button:hover,
+    body[data-theme="default"] .theme-button.active {
+      color: #f6e7a9;
+    }
+
+    body[data-theme="floral"] .theme-button,
+    body[data-theme="floral"] .theme-button.active {
+      color: #2a1520;
+    }
+
+    body[data-theme="modern"] .theme-button,
+    body[data-theme="modern"] .theme-button.active {
+      color: #071018;
+    }
+
     .theme-button:hover,
     .theme-button.active {
       background: rgba(212, 175, 55, 0.12);
       box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
       transform: translateY(-1px);
       color: var(--gold-soft);
+    }
+
+    body[data-theme="floral"] .theme-button:hover,
+    body[data-theme="floral"] .theme-button.active {
+      background: rgba(217, 138, 167, 0.16);
+      box-shadow: 0 0 16px rgba(217, 138, 167, 0.28);
+      color: #2a1520;
+    }
+
+    body[data-theme="modern"] .theme-button:hover,
+    body[data-theme="modern"] .theme-button.active {
+      background: rgba(125, 211, 252, 0.16);
+      box-shadow: 0 0 16px rgba(125, 211, 252, 0.28);
+      color: #071018;
     }
 
     .card {
@@ -282,6 +316,22 @@
       transform: translateY(-1px);
     }
 
+    body[data-theme="floral"] .card:hover {
+      border-color: rgba(255, 227, 239, 0.9);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 34px rgba(217, 138, 167, 0.38),
+        inset 0 0 30px rgba(217, 138, 167, 0.18);
+    }
+
+    body[data-theme="modern"] .card:hover {
+      border-color: rgba(217, 243, 255, 0.9);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 34px rgba(125, 211, 252, 0.32),
+        inset 0 0 30px rgba(125, 211, 252, 0.18);
+    }
+
     .card:hover .highlight {
       text-shadow:
         0 0 10px rgba(246, 231, 169, 0.7),
@@ -289,41 +339,18 @@
         0 0 42px rgba(212, 175, 55, 0.32);
     }
 
-    .eyebrow {
-      display: inline-block;
-      margin-bottom: 18px;
-      font-size: 0.78rem;
-      letter-spacing: 0.26rem;
-      text-transform: uppercase;
-      color: var(--gold-soft);
-      opacity: 0.9;
-      text-align: center;
+    body[data-theme="floral"] .card:hover .highlight {
+      text-shadow:
+        0 0 10px rgba(255, 227, 239, 0.8),
+        0 0 24px rgba(217, 138, 167, 0.6),
+        0 0 42px rgba(217, 138, 167, 0.4);
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 4vw, 4rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: 0.04em;
-      color: var(--white);
-      text-shadow: 0 0 18px rgba(246, 231, 169, 0.2);
-      text-align: center;
-    }
-
-    .highlight {
-      color: var(--gold-soft);
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
-      transition: text-shadow 0.25s ease;
-    }
-
-    p {
-      margin: 24px auto 0;
-      font-size: clamp(1rem, 1.7vw, 1.2rem);
-      line-height: 1.8;
-      color: var(--text-muted);
-      max-width: 62ch;
-      text-align: center;
+    body[data-theme="modern"] .card:hover .highlight {
+      text-shadow:
+        0 0 10px rgba(217, 243, 255, 0.8),
+        0 0 24px rgba(125, 211, 252, 0.6),
+        0 0 42px rgba(125, 211, 252, 0.3);
     }
 
     .socials {
@@ -354,6 +381,16 @@
       transform: translateY(-1px);
     }
 
+    body[data-theme="floral"] .social-link:hover {
+      background: rgba(217, 138, 167, 0.12);
+      box-shadow: 0 0 18px rgba(217, 138, 167, 0.24);
+    }
+
+    body[data-theme="modern"] .social-link:hover {
+      background: rgba(125, 211, 252, 0.12);
+      box-shadow: 0 0 18px rgba(125, 211, 252, 0.22);
+    }
+
     .skills-list {
       list-style: none;
       margin: 28px auto 0;
@@ -375,6 +412,25 @@
       text-align: center;
       box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.08);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    body[data-theme="default"] .eyebrow,
+    body[data-theme="default"] .highlight,
+    body[data-theme="default"] .social-link,
+    body[data-theme="default"] .skill-item,
+    body[data-theme="default"] h1 {
+      color: #f6e7a9;
+    }
+
+    body[data-theme="default"] p,
+    body[data-theme="default"] .eyebrow {
+      color: #d9d6d3;
+    }
+
+    body[data-theme="default"] .card,
+    body[data-theme="default"] .skill-item,
+    body[data-theme="default"] .social-link {
+      border-color: rgba(212, 175, 55, 0.5);
     }
 
     .skill-item:hover {
