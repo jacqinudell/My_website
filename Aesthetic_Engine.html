@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aesthetic Generator</title>
+    <style>
+      :root {
+        --ivory: #f6f1ea;
+        --paper: #fffdf9;
+        --card: rgba(255, 255, 255, 0.7);
+        --text: #1f1b1a;
+        --muted: #6a615e;
+        --muted-2: #8f807b;
+        --taupe: #b8a39b;
+        --sage: #aab79d;
+        --rose: #d4a7aa;
+        --clay: #c99478;
+        --shadow: 0 18px 40px rgba(54, 38, 32, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        background: linear-gradient(180deg, #f8f3ee 0%, #f3eee8 100%);
+        color: var(--text);
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        padding: 40px 18px;
+      }
+
+      .app-shell {
+        width: min(1400px, 100%);
+        display: grid;
+        grid-template-columns: minmax(280px, 440px) minmax(360px, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.42);
+        border: 1px solid rgba(121, 108, 101, 0.09);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .controls {
+        padding: 22px 20px 18px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 4px 18px;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .brand-mark {
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        color: var(--muted-2);
+        text-transform: uppercase;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3vw, 2.3rem);
+        letter-spacing: -0.06em;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 600;
+      }
+
+      .status-pill {
+        border-radius: 999px;
+        border: 1px solid rgba(92, 75, 69, 0.14);
+        background: rgba(255,255,255,0.24);
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+      }
+
+      .section-block {
+        border-top: 1px solid rgba(92,75,69,0.08);
+        padding-top: 18px;
+        margin-top: 18px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .section-header h2 {
+        margin: 0;
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .count-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .count-button,
+      .preset-button,
+      .style-card,
+      .toolbar-button,
+      .remove-button,
+      .action-button {
+        transition: all 0.2s ease;
+      }
+
+      .count-button {
+        height: 40px;
+        min-width: 42px;
+        padding: 0 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(92,75,69,0.12);
+        background: rgba(255,255,255,0.32);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .count-button.active {
+        background: var(--text);
+        color: white;
+        border-color: var(--text);
+      }
+
+      .color-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .color-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        gap: 10px;
+        align-items: center;
+        background: rgba(255,255,255,0.35);
+        border: 1px solid rgba(106,97,94,0.1);
+        border-radius: 18px;
+        padding: 10px 12px;
+      }
+
+      .color-order {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background: rgba(36,34,33,0.06);
+        color: var(--muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+
+      .color-swatch-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .color-swatch {
+        width: 38px;
+        height: 38px;
+        border: none;
+        background: transparent;
+        border-radius: 10px;
+        padding: 0;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .color-swatch::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+
+      .color-swatch::-webkit-color-swatch {
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 10px;
+      }
+
+      .hex-input {
+        width: 100%;
+        border: 1px solid rgba(122, 109, 102, 0.1);
+        background: rgba(255,255,255,0.3);
+        border-radius: 10px;
+        padding: 10px 10px;
+        font-size: 0.82rem;
+        color: var(--text);
+      }
+
+      .remove-button {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 1.25rem;
+        line-height: 1;
+        padding: 0 4px;
+      }
+
+      .remove-button:hover { color: var(--text); }
+
+      .presets-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .preset-button {
+        border-radius: 999px;
+        border: 1px solid rgba(92,75,69,0.12);
+        background: rgba(255,255,255,0.28);
+        color: var(--text);
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 0.75rem;
+      }
+
+      .style-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(110px, 1fr));
+        gap: 10px;
+      }
+
+      .style-card {
+        border: 1px solid rgba(92,75,69,0.1);
+        background: rgba(255,255,255,0.3);
+        border-radius: 16px;
+        padding: 12px 12px 10px;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .style-card.active {
+        background: linear-gradient(180deg, rgba(28, 24, 24, 0.96) 0%, rgba(52, 43, 41, 0.94) 100%);
+        color: white;
+        border-color: transparent;
+      }
+
+      .style-card small {
+        display: block;
+        margin-top: 4px;
+        opacity: 0.72;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .style-card strong {
+        font-size: 0.98rem;
+        letter-spacing: -0.03em;
+      }
+
+      .distribution-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .dist-row {
+        display: grid;
+        grid-template-columns: minmax(78px, 110px) 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .dist-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .dist-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+        flex-shrink: 0;
+      }
+
+      .dist-title {
+        font-size: 0.76rem;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .dist-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(to right, var(--swatch) 0%, var(--swatch) var(--percent), rgba(106,97,94,0.12) var(--percent), rgba(106,97,94,0.12) 100%);
+        outline: none;
+      }
+
+      .dist-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        border: 2px solid var(--swatch);
+        box-shadow: 0 6px 16px rgba(61,51,46,0.18);
+        cursor: pointer;
+      }
+
+      .dist-value {
+        min-width: 48px;
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .action-button,
+      .toolbar-button {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+      }
+
+      .action-button {
+        background: linear-gradient(135deg, #1b1717 0%, #352f2e 100%);
+        color: white;
+        box-shadow: 0 12px 24px rgba(38,30,29,0.15);
+      }
+
+      .toolbar-button {
+        background: rgba(255,255,255,0.35);
+        color: var(--text);
+        border: 1px solid rgba(92,75,69,0.1);
+      }
+
+      .result-card {
+        padding: 22px;
+        min-height: 100%;
+      }
+
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .result-header h3 {
+        margin: 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .result-badge {
+        background: rgba(154, 168, 140, 0.15);
+        color: #3d5440;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .moodboard-stage {
+        position: relative;
+        background: linear-gradient(180deg, #f3e9e2 0%, #efe3d9 100%);
+        border-radius: 24px;
+        border: 1px solid rgba(97,86,82,0.12);
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+      }
+
+      .moodboard-stage svg {
+        display: block;
+        width: 100%;
+        height: 420px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .mini-panel {
+        background: rgba(255,255,255,0.38);
+        border: 1px solid rgba(92,75,69,0.08);
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .mini-panel h4 {
+        margin: 0 0 12px;
+        font-size: 0.72rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .swatch-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .swatch-item {
+        display: grid;
+        grid-template-columns: 18px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        font-size: 0.8rem;
+      }
+
+      .swatch-item .dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+      }
+
+      .distribution-summary {
+        display: grid;
+        gap: 8px;
+      }
+
+      .distribution-summary .entry {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .distribution-summary .bar {
+        position: relative;
+        flex: 1;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(117,102,96,0.12);
+        overflow: hidden;
+      }
+
+      .distribution-summary .bar > span {
+        position: absolute;
+        inset: 0 auto 0 0;
+        border-radius: inherit;
+      }
+
+      .story {
+        margin-top: 18px;
+        background: rgba(255,255,255,0.38);
+        border: 1px solid rgba(92,75,69,0.08);
+        border-radius: 18px;
+        padding: 18px 18px 16px;
+      }
+
+      .story h4 {
+        margin: 0 0 10px;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .story p {
+        margin: 0;
+        color: var(--text);
+        line-height: 1.65;
+        font-size: 0.98rem;
+      }
+
+      .recommendations {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .recommend-item {
+        background: rgba(255,255,255,0.34);
+        border-radius: 16px;
+        border: 1px solid rgba(92,75,69,0.08);
+        padding: 14px 12px;
+      }
+
+      .recommend-item .label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .recommend-item strong {
+        line-height: 1.5;
+        font-size: 0.93rem;
+      }
+
+      @media (max-width: 980px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        body { padding: 20px 12px; }
+
+        .controls,
+        .result-card { padding: 16px; }
+
+        .result-grid,
+        .recommendations,
+        .style-grid { grid-template-columns: 1fr; }
+
+        .color-row {
+          grid-template-columns: auto 1fr auto;
+        }
+
+        .color-order { display: none; }
+
+        .remove-button { grid-column: 2 / -1; justify-self: end; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="panel controls">
+        <div class="topbar">
+          <div class="brand">
+            <span class="brand-mark">Aesthetic Engine</span>
+            <h1>Generator</h1>
+          </div>
+          <div class="status-pill">Live</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h2>Color Count</h2>
+          </div>
+          <div id="countPicker" class="count-picker"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h2>Palette</h2>
+          </div>
+          <div id="colorFields" class="color-list"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h2>Palette Presets</h2>
+          </div>
+          <div id="presetGrid" class="presets-grid"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h2>Aesthetic Type</h2>
+          </div>
+          <div id="styleGrid" class="style-grid"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h2>Color Distribution</h2>
+          </div>
+          <div id="distributionList" class="distribution-list"></div>
+        </div>
+
+        <div class="toolbar">
+          <button class="action-button" id="generateBtn">Generate My Aesthetic</button>
+          <button class="toolbar-button" id="regenerateBtn">Regenerate</button>
+          <button class="toolbar-button" id="resetBtn">Reset</button>
+          <button class="toolbar-button" id="downloadBtn">Download PNG</button>
+        </div>
+      </aside>
+
+      <main class="panel result-card">
+        <div class="result-header">
+          <h3>Generated Moodboard</h3>
+          <div id="resultBadge" class="result-badge">Coquette</div>
+        </div>
+
+        <div class="moodboard-stage">
+          <svg id="moodboardSvg" viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" aria-label="Generated aesthetic moodboard"></svg>
+        </div>
+
+        <div class="result-grid">
+          <div class="mini-panel">
+            <h4>Palette</h4>
+            <div id="paletteList" class="swatch-list"></div>
+          </div>
+
+          <div class="mini-panel">
+            <h4>Distribution</h4>
+            <div id="distributionSummary" class="distribution-summary"></div>
+          </div>
+        </div>
+
+        <div class="story">
+          <h4>Aesthetic DNA</h4>
+          <p id="descriptionText"></p>
+        </div>
+
+        <div class="recommendations">
+          <div class="recommend-item">
+            <span class="label">Typography</span>
+            <strong id="typographyRec">Elegant serif</strong>
+          </div>
+          <div class="recommend-item">
+            <span class="label">Textures</span>
+            <strong id="textureRec">Lace and parchment</strong>
+          </div>
+          <div class="recommend-item">
+            <span class="label">Motifs</span>
+            <strong id="motifRec">Ribbons and roses</strong>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const aestheticCatalog = {
+        Minimalist: {
+          label: 'Minimalist',
+          mood: 'Calm, precise, intentional',
+          description: 'A quiet composition shaped by negative space, gentle contrasts, and thoughtfully paced proportions.',
+          typography: 'Modern sans serif with generous tracking and clean rhythm.',
+          textures: 'Linen, matte plaster, soft stone',
+          motifs: 'Architectural lines, circular forms, restrained silhouettes',
+          pattern: 'monolithic blocks',
+          background: '#F4EFE6'
+        },
+        Coquette: {
+          label: 'Coquette',
+          mood: 'Romantic, delicate, nostalgic',
+          description: 'A sweetly curated moodboard balancing soft femininity with graceful vintage details and intimate warmth.',
+          typography: 'Delicate serif with romantic script accents and airy spacing.',
+          textures: 'Lace, satin, floral vellum',
+          motifs: 'Ribbons, roses, pearl details, scalloped edges',
+          pattern: 'flowered curves',
+          background: '#F8F0EE'
+        },
+        'Dark Academia': {
+          label: 'Dark Academia',
+          mood: 'Scholarly, moody, rich',
+          description: 'An atmospheric composition rooted in depth, paper textures, and timeless literary elegance.',
+          typography: 'High-contrast serif with classic editorial proportions.',
+          textures: 'Leather, parchment, aged wool, embossed paper',
+          motifs: 'Arches, columns, books, framed portraits, layered geometry',
+          pattern: 'archways and ledger lines',
+          background: '#EDE4DA'
+        },
+        'Light Academia': {
+          label: 'Light Academia',
+          mood: 'Warm, thoughtful, scholarly',
+          description: 'A dreamy academic direction with mellow tones, tactile textures, and soft structure.',
+          typography: 'Elegant serif pairing with gentle modern sensibility.',
+          textures: 'Canvas, warm paper, light wool, faded linen',
+          motifs: 'Soft columns, abstract floral studies, book stacks',
+          pattern: 'light geometric layering',
+          background: '#F5F1E8'
+        },
+        'Old Money': {
+          label: 'Old Money',
+          mood: 'Refined, quiet luxury',
+          description: 'An elevated composition with inherited textures, polished restraint, and an unmistakable sense of heritage.',
+          typography: 'Classic serif with sophisticated editorial balance.',
+          textures: 'Velvet, silk, cedar, brushed brass',
+          motifs: 'Monograms, crest-like forms, marquetry details, tailored curves',
+          pattern: 'heritage patterns',
+          background: '#F2E7DD'
+        },
+        Cottagecore: {
+          label: 'Cottagecore',
+          mood: 'Earthy, pastoral, comforting',
+          description: 'A gentle countryside mood where handpicked tones, floral softness, and comforting textures shape the story.',
+          typography: 'Friendly serif with organic softness and handwritten notes.',
+          textures: 'Woven cotton, patched linen, dried herbs, clay',
+          motifs: 'Wildflowers, vines, scallops, gathered baskets',
+          pattern: 'botanical meadows',
+          background: '#F5F1E7'
+        },
+        Vintage: {
+          label: 'Vintage',
+          mood: 'Nostalgic, tactile, expressive',
+          description: 'A layered retro pulse inspired by collected ephemera, faded glamour, and preserved character.',
+          typography: 'Retro serif combined with spaced lowercase details.',
+          textures: 'Patina, faded print, film grain, worn fabric',
+          motifs: 'Postcards, pressed florals, cassette curves, decorative frames',
+          pattern: 'retro collage',
+          background: '#F5EEE1'
+        },
+        Y2K: {
+          label: 'Y2K',
+          mood: 'Playful, glossy, electric',
+          description: 'A cheerful and futuristic arrangement with candy gloss, metallic sparkle, and digital-era confidence.',
+          typography: 'Rounded sans with bold geometric punctuation and playful contrasts.',
+          textures: 'Chrome, glossy vinyl, iridescent mesh, translucent plastic',
+          motifs: 'Stars, sparkles, hearts, chrome curves, gridded layers',
+          pattern: 'digital sparkle clusters',
+          background: '#F5EEFA'
+        },
+        Cyberpunk: {
+          label: 'Cyberpunk',
+          mood: 'Electric, futuristic, edgy',
+          description: 'A bold vision of neon motion, data-like structure, and urban tension infused with cinematic glow.',
+          typography: 'Tech-noir geometric sans with high-contrast rhythm.',
+          textures: 'Neon glass, reflective metal, wet asphalt, translucent acrylic',
+          motifs: 'Circuit lines, holographic grids, angular beams, futuristic portals',
+          pattern: 'neon circuitry',
+          background: '#F1EEF8'
+        },
+        Coastal: {
+          label: 'Coastal',
+          mood: 'Airy, breezy, restorative',
+          description: 'A light-filled seaside direction shaped by salt air, organic curves, and oceanic movement.',
+          typography: 'Clean modern sans with breezy rhythm and soft contrast.',
+          textures: 'Driftwood, woven rope, brushed sand, weathered glass',
+          motifs: 'Wave lines, shells, dune forms, horizon curves',
+          pattern: 'oceanic motion',
+          background: '#EFF5F3'
+        },
+        Romantic: {
+          label: 'Romantic',
+          mood: 'Tender, expressive, lush',
+          description: 'An expressive composition full of warmth, emotional softness, and layered floral poetry.',
+          typography: 'High-contrast serif and graceful cursive tension.',
+          textures: 'Silk, velvet, rose petals, watercolor paper',
+          motifs: 'Flowers, hearts, velvet drapes, softly layered petals',
+          pattern: 'blossom spirals',
+          background: '#F8EFEA'
+        },
+        Gothic: {
+          label: 'Gothic',
+          mood: 'Mysterious, dramatic, ornate',
+          description: 'A moody arrangement balancing candlelit drama, antique detail, and elegant gravitas.',
+          typography: 'Blackletter-inspired serif with decadent contrast.',
+          textures: 'Velvet, stained glass, stone, antique brass',
+          motifs: 'Arched windows, cruciform lines, lace, ornamental flourishes',
+          pattern: 'ornamental shadowwork',
+          background: '#F3EEE9'
+        },
+        Scandinavian: {
+          label: 'Scandinavian',
+          mood: 'Clean, bright, functional',
+          description: 'An airy Nordic composition founded on utility, softness, and balanced geometry.',
+          typography: 'Minimal sans with crisp spacing and understated expression.',
+          textures: 'Birch, wool, chalk, ceramic',
+          motifs: 'Simple circles, natural wood curves, structured negative space',
+          pattern: 'Nordic simplicity',
+          background: '#F5F4F2'
+        },
+        Bohemian: {
+          label: 'Bohemian',
+          mood: 'Layered, free-spirited, warm',
+          description: 'An imaginative composition with global textures, organic layering, and a lived-in ease.',
+          typography: 'Mix of serif and handwritten notes with expressive spacing.',
+          textures: 'Patchwork fabric, woven textiles, travel paper, clay pottery',
+          motifs: 'Mandalas, paisley, embroidered arcs, sunbursts',
+          pattern: 'textile collage',
+          background: '#F7F0E6'
+        },
+        'Clean Girl': {
+          label: 'Clean Girl',
+          mood: 'Polished, easy, elevated',
+          description: 'A fresh, modern arrangement that feels effortless, luminous, and quietly luxurious.',
+          typography: 'Refined sans with modern polish and subtle softness.',
+          textures: 'Cotton, brushed metal, glossy ceramic, smooth leather',
+          motifs: 'Minimal curves, soft layers, clean framing, polished surfaces',
+          pattern: 'intentional simplicity',
+          background: '#F4F1EF'
+        },
+        Custom: {
+          label: 'Custom',
+          mood: 'Personal, expressive, bespoke',
+          description: 'A tailored composition drawing from your selected palette and your unique sense of balance.',
+          typography: 'A personalized mix based on your selected mood and balance.',
+          textures: 'Layered textures adapting to your color relationships',
+          motifs: 'Unique motifs inspired by your chosen palette and visual weight',
+          pattern: 'custom composition',
+          background: '#F4F0E9'
+        }
+      };
+
+      const presetPalettes = {
+        Rosy: ['#F4E9D8', '#C98F94', '#604238', '#A3A98C'],
+        Dawn: ['#F8E7DA', '#E7B9A8', '#A46E62', '#5B5F7A'],
+        Forest: ['#F3EDE5', '#9AA88B', '#485A48', '#3F352D'],
+        Monochrome: ['#F7F3EE', '#C7B7A4', '#7F6A5D', '#2A2523'],
+        Pop: ['#F3EAF1', '#FF8EC7', '#6B7FFF', '#F7D14F']
+      };
+
+      const defaultNames = ['Cream', 'Dusty Rose', 'Chocolate', 'Sage', 'Blush', 'Stone', 'Peony', 'Heather'];
+      const state = {
+        colorCount: 4,
+        selectedAesthetic: 'Coquette',
+        colors: [
+          { hex: '#F4E9D8', name: 'Cream' },
+          { hex: '#C98F94', name: 'Dusty Rose' },
+          { hex: '#604238', name: 'Chocolate' },
+          { hex: '#A3A98C', name: 'Sage' }
+        ],
+        percentages: [50, 25, 15, 10],
+        seed: 0
+      };
+
+      const countPicker = document.getElementById('countPicker');
+      const colorFields = document.getElementById('colorFields');
+      const presetGrid = document.getElementById('presetGrid');
+      const styleGrid = document.getElementById('styleGrid');
+      const distributionList = document.getElementById('distributionList');
+      const paletteList = document.getElementById('paletteList');
+      const distributionSummary = document.getElementById('distributionSummary');
+      const descriptionText = document.getElementById('descriptionText');
+      const typographyRec = document.getElementById('typographyRec');
+      const textureRec = document.getElementById('textureRec');
+      const motifRec = document.getElementById('motifRec');
+      const resultBadge = document.getElementById('resultBadge');
+
+      function clampCount(value) {
+        return Math.min(8, Math.max(2, Number(value) || 2));
+      }
+
+      function isValidHex(value) {
+        return /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(String(value || '').trim());
+      }
+
+      function normalizeHex(value, fallback = '#C98F94') {
+        if (!value) return fallback;
+        const trimmed = String(value).trim();
+        if (!isValidHex(trimmed)) return fallback;
+        if (trimmed.length === 4) {
+          return '#' + trimmed.slice(1).split('').map(char => char + char).join('').toUpperCase();
+        }
+        return trimmed.toUpperCase();
+      }
+
+      function hexToRgb(hex) {
+        const safe = normalizeHex(hex, '#000000');
+        const clean = safe.replace('#', '');
+        const full = clean.length === 3 ? clean.split('').map(ch => ch + ch).join('') : clean;
+        const num = parseInt(full, 16);
+        return {
+          r: (num >> 16) & 255,
+          g: (num >> 8) & 255,
+          b: num & 255
+        };
+      }
+
+      function rgbToHex(r, g, b) {
+        const toHex = (value) => value.toString(16).padStart(2, '0');
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+      }
+
+      function mixHex(colorA, colorB, weight = 0.5) {
+        const a = hexToRgb(colorA);
+        const b = hexToRgb(colorB);
+        const mix = (start, end) => Math.round(start + (end - start) * weight);
+        return rgbToHex(mix(a.r, b.r), mix(a.g, b.g), mix(a.b, b.b));
+      }
+
+      function lightenHex(hex, amount = 0.15) {
+        return mixHex('#FFFFFF', hex, amount);
+      }
+
+      function darkenHex(hex, amount = 0.2) {
+        return mixHex('#000000', hex, amount);
+      }
+
+      function sortColorIndexesByPercentage(colorSet, percentages) {
+        return colorSet
+          .map((_, index) => index)
+          .sort((a, b) => percentages[b] - percentages[a]);
+      }
+
+      function normalizeColorCount() {
+        while (state.colors.length < state.colorCount) {
+          const nextIndex = state.colors.length;
+          const fallbackHex = defaultNames[nextIndex % defaultNames.length];
+          state.colors.push({
+            hex: presetPalettes.Rosy[nextIndex % presetPalettes.Rosy.length],
+            name: fallbackHex
+          });
+        }
+
+        if (state.colors.length > state.colorCount) {
+          state.colors = state.colors.slice(0, state.colorCount);
+        }
+
+        while (state.percentages.length < state.colorCount) {
+          state.percentages.push(Math.max(1, Math.round(100 / state.colorCount)));
+        }
+
+        if (state.percentages.length > state.colorCount) {
+          state.percentages = state.percentages.slice(0, state.colorCount);
+        }
+
+        const total = state.percentages.reduce((sum, value) => sum + Number(value || 0), 0);
+        if (total !== 100) {
+          const distribution = Array.from({ length: state.colorCount }, (_, index) => {
+            if (index < state.percentages.length && Number.isFinite(state.percentages[index])) return Number(state.percentages[index]);
+            return 0;
+          });
+          const totalDistribution = distribution.reduce((sum, value) => sum + value, 0);
+          const fill = totalDistribution === 0 ? 100 / state.colorCount : totalDistribution;
+          let next = distribution.map((value) => value > 0 ? (value / fill) * 100 : 0);
+          next = next.map((value) => Number(value.toFixed(1)));
+          let difference = 100 - next.reduce((sum, value) => sum + value, 0);
+          const finalIndex = next.length - 1;
+          next[finalIndex] += difference;
+          state.percentages = next.map((value) => Math.max(1, Math.round(value)));
+          let finalSum = state.percentages.reduce((sum, value) => sum + value, 0);
+          while (finalSum !== 100 && finalSum < 100) {
+            state.percentages[finalIndex] += 1;
+            finalSum += 1;
+          }
+          while (finalSum !== 100 && finalSum > 100) {
+            state.percentages[finalIndex] -= 1;
+            finalSum -= 1;
+          }
+        }
+      }
+
+      function renderCountPicker() {
+        countPicker.innerHTML = '';
+        for (let i = 2; i <= 8; i += 1) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `count-button ${state.colorCount === i ? 'active' : ''}`;
+          button.textContent = i;
+          button.addEventListener('click', () => {
+            state.colorCount = i;
+            const previousPercentages = [...state.percentages];
+            const previousLength = previousPercentages.length;
+            while (state.percentages.length < state.colorCount) {
+              state.percentages.push(0);
+            }
+            const target = Array.from({ length: state.colorCount }, (_, index) => {
+              if (index < previousLength && previousPercentages[index] > 0) return previousPercentages[index];
+              return Math.round(100 / state.colorCount);
+            });
+            const sum = target.reduce((x, y) => x + y, 0);
+            if (sum !== 100) {
+              const adjustment = 100 - sum;
+              target[target.length - 1] += adjustment;
+            }
+            state.percentages = target.map((value) => Math.max(1, value));
+            while (state.percentages.length > state.colorCount) {
+              state.percentages.pop();
+            }
+            normalizeColorCount();
+            renderAll();
+          });
+          countPicker.appendChild(button);
+        }
+      }
+
+      function renderColorFields() {
+        colorFields.innerHTML = '';
+        state.colors.forEach((colorEntry, index) => {
+          const row = document.createElement('div');
+          row.className = 'color-row';
+
+          const order = document.createElement('span');
+          order.className = 'color-order';
+          order.textContent = index + 1;
+
+          const swatchWrap = document.createElement('div');
+          swatchWrap.className = 'color-swatch-wrap';
+
+          const colorPicker = document.createElement('input');
+          colorPicker.type = 'color';
+          colorPicker.className = 'color-swatch';
+          colorPicker.value = normalizeHex(colorEntry.hex, '#D9C1BB');
+          colorPicker.setAttribute('aria-label', `Select color ${index + 1}`);
+          colorPicker.addEventListener('input', (event) => {
+            state.colors[index].hex = normalizeHex(event.target.value, '#D9C1BB');
+            renderAll();
+          });
+
+          const hexInput = document.createElement('input');
+          hexInput.type = 'text';
+          hexInput.className = 'hex-input';
+          hexInput.value = normalizeHex(colorEntry.hex, '#D9C1BB').toUpperCase();
+          hexInput.setAttribute('maxlength', '7');
+          hexInput.addEventListener('change', (event) => {
+            const nextValue = normalizeHex(event.target.value, state.colors[index].hex);
+            state.colors[index].hex = nextValue;
+            renderAll();
+          });
+
+          swatchWrap.appendChild(colorPicker);
+          swatchWrap.appendChild(hexInput);
+
+          const removeButton = document.createElement('button');
+          removeButton.type = 'button';
+          removeButton.className = 'remove-button';
+          removeButton.textContent = '×';
+          removeButton.title = 'Remove color';
+          removeButton.disabled = state.colorCount <= 2;
+          removeButton.addEventListener('click', () => {
+            if (state.colorCount <= 2) return;
+            state.colorCount -= 1;
+            state.colors.splice(index, 1);
+            state.percentages.splice(index, 1);
+            while (state.percentages.length < state.colorCount) {
+              state.percentages.push(0);
+            }
+            const total = state.percentages.reduce((sum, value) => sum + Number(value || 0), 0);
+            if (total !== 100) {
+              const adjustment = 100 - total;
+              state.percentages[state.percentages.length - 1] += adjustment;
+            }
+            state.colors = state.colors.map((entry, idx) => ({
+              ...entry,
+              name: entry.name || defaultNames[idx] || `Color ${idx + 1}`
+            }));
+            renderAll();
+          });
+
+          row.appendChild(order);
+          row.appendChild(swatchWrap);
+          row.appendChild(document.createTextNode(''));
+          row.appendChild(removeButton);
+          colorFields.appendChild(row);
+        });
+      }
+
+      function renderPresets() {
+        presetGrid.innerHTML = '';
+        Object.entries(presetPalettes).forEach(([label, palette]) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'preset-button';
+          button.textContent = label;
+          button.addEventListener('click', () => {
+            const newColors = palette.map((hex, idx) => ({
+              hex: normalizeHex(hex),
+              name: defaultNames[idx] || `Color ${idx + 1}`
+            }));
+            state.colors = newColors.slice(0, state.colorCount);
+            while (state.colors.length < state.colorCount) {
+              state.colors.push({
+                hex: normalizeHex(palette[(state.colors.length) % palette.length]),
+                name: defaultNames[state.colors.length] || `Color ${state.colors.length + 1}`
+              });
+            }
+            const targetPercentages = Array.from({ length: state.colorCount }, (_, idx) => {
+              const raw = 100 / state.colorCount;
+              return idx === state.colorCount - 1 ? Number((100 - ((state.colorCount - 1) * raw)).toFixed(2)) : raw;
+            });
+            state.percentages = targetPercentages;
+            renderAll();
+          });
+          presetGrid.appendChild(button);
+        });
+      }
+
+      function renderStyles() {
+        styleGrid.innerHTML = '';
+        Object.entries(aestheticCatalog).forEach(([key, value]) => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = `style-card ${state.selectedAesthetic === key ? 'active' : ''}`;
+          card.innerHTML = `<small>${value.mood}</small><strong>${value.label}</strong>`;
+          card.addEventListener('click', () => {
+            state.selectedAesthetic = key;
+            renderStyles();
+            generateMoodboard();
+          });
+          styleGrid.appendChild(card);
+        });
+      }
+
+      function adjustPercentages(index, nextValue) {
+        const safeNext = Math.min(99, Math.max(1, Number(nextValue) || 1));
+        const oldValue = Number(state.percentages[index] || 0);
+        state.percentages[index] = safeNext;
+
+        const otherIndex = state.percentages
+          .map((value, i) => ({ value: Number(value || 0), i }))
+          .filter((entry) => entry.i !== index)
+          .map((entry) => entry.value);
+
+        const othersTotal = otherIndex.reduce((sum, value) => sum + value, 0) || 1;
+        const remaining = 100 - safeNext;
+        const adjusted = state.percentages.map((value, i) => {
+          if (i === index) return safeNext;
+          const base = (Number(value || 0) / othersTotal) * remaining;
+          return Number(base.toFixed(1));
+        });
+
+        const currentSum = adjusted.reduce((sum, value) => sum + value, 0);
+        const diff = 100 - currentSum;
+        adjusted[adjusted.length - 1] += diff;
+
+        state.percentages = adjusted.map((value) => Math.max(1, Math.round(value)));
+        const finalTotal = state.percentages.reduce((sum, value) => sum + value, 0);
+        if (finalTotal !== 100) {
+          const delta = 100 - finalTotal;
+          state.percentages[state.percentages.length - 1] += delta;
+        }
+
+        if (oldValue === safeNext) {
+          state.percentages[index] = safeNext;
+        }
+      }
+
+      function renderDistribution() {
+        distributionList.innerHTML = '';
+        state.colors.forEach((colorEntry, index) => {
+          const row = document.createElement('div');
+          row.className = 'dist-row';
+
+          const meta = document.createElement('div');
+          meta.className = 'dist-meta';
+          const dot = document.createElement('span');
+          dot.className = 'dist-swatch';
+          dot.style.background = normalizeHex(colorEntry.hex);
+          const title = document.createElement('span');
+          title.className = 'dist-title';
+          title.textContent = colorEntry.name || `Color ${index + 1}`;
+          meta.appendChild(dot);
+          meta.appendChild(title);
+
+          const sliderWrap = document.createElement('div');
+          sliderWrap.style.width = '100%';
+
+          const slider = document.createElement('input');
+          slider.type = 'range';
+          slider.min = '1';
+          slider.max = '100';
+          slider.value = state.percentages[index] || 10;
+          slider.className = 'dist-slider';
+          slider.style.setProperty('--swatch', normalizeHex(colorEntry.hex));
+          slider.style.setProperty('--percent', `${state.percentages[index] || 0}%`);
+          slider.addEventListener('input', (event) => {
+            adjustPercentages(index, event.target.value);
+            renderDistribution();
+          });
+
+          const value = document.createElement('div');
+          value.className = 'dist-value';
+          value.textContent = `${state.percentages[index] || 0}%`;
+
+          sliderWrap.appendChild(slider);
+          row.appendChild(meta);
+          row.appendChild(sliderWrap);
+          row.appendChild(value);
+          distributionList.appendChild(row);
+        });
+      }
+
+      function renderPalette() {
+        paletteList.innerHTML = '';
+        state.colors.forEach((entry) => {
+          const item = document.createElement('div');
+          item.className = 'swatch-item';
+          item.innerHTML = `
+            <span class="dot" style="background:${normalizeHex(entry.hex)}"></span>
+            <span>${entry.name || 'Color'}</span>
+            <strong>${normalizeHex(entry.hex).toUpperCase()}</strong>
+          `;
+          paletteList.appendChild(item);
+        });
+      }
+
+      function renderDistributionSummary() {
+        distributionSummary.innerHTML = '';
+        const sorted = sortColorIndexesByPercentage(state.colors, state.percentages);
+        sorted.forEach((index) => {
+          const row = document.createElement('div');
+          row.className = 'entry';
+          const label = document.createElement('span');
+          label.textContent = state.colors[index].name || `Color ${index + 1}`;
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          const fill = document.createElement('span');
+          fill.style.width = `${state.percentages[index]}%`;
+          fill.style.background = normalizeHex(state.colors[index].hex);
+          bar.appendChild(fill);
+          const value = document.createElement('strong');
+          value.textContent = `${state.percentages[index]}%`;
+          row.appendChild(label);
+          row.appendChild(bar);
+          row.appendChild(value);
+          distributionSummary.appendChild(row);
+        });
+      }
+
+      function generateMoodboard() {
+        const aesthetic = aestheticCatalog[state.selectedAesthetic] || aestheticCatalog.Coquette;
+        const orderedIndexes = sortColorIndexesByPercentage(state.colors, state.percentages);
+        const dominantIndex = orderedIndexes[0];
+        const secondaryIndex = orderedIndexes[1] ?? dominantIndex;
+        const accentIndex = orderedIndexes[2] ?? dominantIndex;
+
+        const dominant = normalizeHex(state.colors[dominantIndex].hex);
+        const secondary = normalizeHex(state.colors[secondaryIndex].hex);
+        const accent = normalizeHex(state.colors[accentIndex].hex);
+        const bg = aesthetic.background || mixHex('#F7F2EC', dominant, 0.36);
+
+        resultBadge.textContent = aesthetic.label;
+        descriptionText.textContent = `${aesthetic.description} The dominant ${state.colors[dominantIndex].name || 'primary'} tone carries the overall focus, while ${state.colors[secondaryIndex].name || 'secondary'} and ${state.colors[accentIndex].name || 'accent'} harmonize the supporting story.`;
+        typographyRec.textContent = aesthetic.typography;
+        textureRec.textContent = aesthetic.textures;
+        motifRec.textContent = aesthetic.motifs;
+
+        const svg = document.getElementById('moodboardSvg');
+        const seed = state.seed || 1;
+        const leftPanel = mixHex(bg, dominant, 0.72);
+        const rightPanel = mixHex(bg, secondary, 0.78);
+        const glow = lightenHex(accent, 0.5);
+
+        const shapeMarkup = buildStyleShapes({
+          dominant,
+          secondary,
+          accent,
+          bg,
+          leftPanel,
+          rightPanel,
+          glow,
+          seed,
+          style: state.selectedAesthetic
+        });
+
+        svg.innerHTML = `
+          <defs>
+            <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${bg}" />
+              <stop offset="100%" stop-color="${mixHex(bg, '#FFFFFF', 0.5)}" />
+            </linearGradient>
+            <radialGradient id="glowGradient" cx="50%" cy="50%" r="70%">
+              <stop offset="0%" stop-color="${glow}" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="${glow}" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="760" height="420" fill="url(#bgGradient)" />
+          <rect x="0" y="0" width="760" height="420" fill="url(#glowGradient)" opacity="0.7" />
+          <g opacity="0.15">
+            <path d="M0 70 H760" stroke="${darkenHex(bg, 0.3)}" stroke-width="1" />
+            <path d="M0 210 H760" stroke="${darkenHex(bg, 0.3)}" stroke-width="1" />
+            <path d="M0 350 H760" stroke="${darkenHex(bg, 0.3)}" stroke-width="1" />
+          </g>
+          ${shapeMarkup}
+        `;
+      }
+
+      function buildStyleShapes({ dominant, secondary, accent, bg, leftPanel, rightPanel, glow, seed, style }) {
+        const offset = ((seed % 8) + 1) * 18;
+        const patternOpacity = 0.18 + (seed % 4) * 0.04;
+
+        const shapesMap = {
+          Minimalist: `
+            <rect x="80" y="74" width="360" height="260" rx="26" fill="${dominant}" opacity="0.94" />
+            <rect x="470" y="100" width="180" height="200" rx="22" fill="${secondary}" opacity="0.9" />
+            <circle cx="610" cy="150" r="52" fill="${accent}" opacity="0.85" />
+            <rect x="125" y="146" width="290" height="18" rx="9" fill="${lightenHex(bg, 0.1)}" opacity="0.6" />
+            <rect x="125" y="188" width="240" height="18" rx="9" fill="${lightenHex(bg, 0.1)}" opacity="0.38" />
+            <rect x="125" y="230" width="200" height="18" rx="9" fill="${lightenHex(bg, 0.1)}" opacity="0.3" />
+          `,
+          Coquette: `
+            <rect x="58" y="60" width="310" height="300" rx="28" fill="${dominant}" opacity="0.94" />
+            <path d="M395 130 C445 90, 530 98, 545 151 C555 190, 545 212, 514 232 C490 248, 470 270, 460 311 C444 269, 414 240, 392 214 C368 184, 370 155, 395 130 Z" fill="${secondary}" opacity="0.76" />
+            <path d="M135 325 C150 260, 200 225, 256 246 C220 260, 204 290, 205 323 Z" fill="${accent}" opacity="0.82" />
+            <circle cx="225" cy="165" r="58" fill="${lightenHex(accent, 0.32)}" opacity="0.8" />
+            <g opacity="${patternOpacity}">
+              <circle cx="245" cy="165" r="18" fill="none" stroke="${bg}" stroke-width="2" />
+              <path d="M182 328 C220 292, 260 292, 300 328" fill="none" stroke="${bg}" stroke-width="2" />
+            </g>
+          `,
+          'Dark Academia': `
+            <rect x="70" y="78" width="310" height="270" rx="18" fill="${dominant}" opacity="0.92" />
+            <rect x="420" y="86" width="200" height="260" rx="12" fill="${secondary}" opacity="0.78" />
+            <g opacity="0.54">
+              <path d="M430 120 H602" stroke="${bg}" stroke-width="2" />
+              <path d="M430 154 H602" stroke="${bg}" stroke-width="2" />
+              <path d="M430 188 H602" stroke="${bg}" stroke-width="2" />
+              <path d="M430 222 H602" stroke="${bg}" stroke-width="2" />
+              <path d="M430 256 H602" stroke="${bg}" stroke-width="2" />
+            </g>
+            <path d="M110 115 L170 115 L170 300 L110 300 Z" fill="${accent}" opacity="0.72" />
+            <path d="M96 322 L332 322" stroke="${bg}" stroke-width="6" stroke-linecap="round" />
+            <path d="M456 89 L560 89 L560 320 L456 320 Z" fill="none" stroke="${accent}" stroke-width="3" opacity="0.7" />
+          `,
+          'Light Academia': `
+            <rect x="72" y="68" width="270" height="290" rx="20" fill="${dominant}" opacity="0.9" />
+            <circle cx="510" cy="155" r="92" fill="${secondary}" opacity="0.75" />
+            <circle cx="650" cy="215" r="76" fill="${accent}" opacity="0.66" />
+            <g opacity="0.35">
+              <path d="M120 140 H300" stroke="${bg}" stroke-width="2" />
+              <path d="M120 186 H290" stroke="${bg}" stroke-width="2" />
+              <path d="M120 232 H280" stroke="${bg}" stroke-width="2" />
+            </g>
+            <path d="M440 300 C500 260, 560 290, 610 260" fill="none" stroke="${bg}" stroke-width="3" stroke-linecap="round" />
+          `,
+          'Old Money': `
+            <rect x="80" y="70" width="330" height="280" rx="28" fill="${dominant}" opacity="0.96" />
+            <path d="M430 112 H650 L590 315 H490 Z" fill="${secondary}" opacity="0.85" />
+            <path d="M456 135 H620" stroke="${bg}" stroke-width="3" opacity="0.7" />
+            <circle cx="540" cy="170" r="40" fill="${accent}" opacity="0.72" />
+            <path d="M146 164 C184 126, 218 124, 254 165" fill="none" stroke="${bg}" stroke-width="2" opacity="0.7" />
+            <path d="M146 222 C205 186, 246 192, 290 224" fill="none" stroke="${bg}" stroke-width="2" opacity="0.55" />
+          `,
+          Cottagecore: `
+            <rect x="80" y="72" width="350" height="276" rx="28" fill="${dominant}" opacity="0.9" />
+            <g opacity="0.82">
+              <circle cx="560" cy="150" r="44" fill="${secondary}" />
+              <circle cx="620" cy="130" r="30" fill="${accent}" />
+              <circle cx="495" cy="178" r="34" fill="${accent}" opacity="0.7" />
+            </g>
+            <path d="M440 302 C482 262, 530 258, 646 286" fill="none" stroke="${secondary}" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+            <path d="M120 126 C174 138, 198 158, 234 178 C198 204, 178 233, 122 246 Z" fill="${lightenHex(accent, 0.2)}" opacity="0.78" />
+            <circle cx="220" cy="170" r="26" fill="${bg}" opacity="0.35" />
+          `,
+          Vintage: `
+            <rect x="72" y="78" width="312" height="280" rx="26" fill="${dominant}" opacity="0.92" />
+            <rect x="430" y="110" width="220" height="190" rx="20" fill="${secondary}" opacity="0.7" />
+            <circle cx="565" cy="176" r="72" fill="${accent}" opacity="0.72" />
+            <path d="M104 122 H330" stroke="${bg}" stroke-width="2" opacity="0.7" />
+            <path d="M104 172 H300" stroke="${bg}" stroke-width="2" opacity="0.6" />
+            <path d="M104 222 H280" stroke="${bg}" stroke-width="2" opacity="0.5" />
+            <path d="M104 270 H248" stroke="${bg}" stroke-width="2" opacity="0.45" />
+          `,
+          Y2K: `
+            <rect x="70" y="72" width="330" height="280" rx="28" fill="${dominant}" opacity="0.95" />
+            <path d="M442 110 L620 134 L580 308 L404 286 Z" fill="${secondary}" opacity="0.72" />
+            <circle cx="537" cy="176" r="78" fill="${accent}" opacity="0.7" />
+            <g opacity="0.8">
+              <circle cx="138" cy="130" r="11" fill="${bg}" />
+              <circle cx="180" cy="130" r="11" fill="${bg}" />
+              <circle cx="222" cy="130" r="11" fill="${bg}" />
+            </g>
+            <path d="M120 318 L242 248" stroke="${bg}" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+            <path d="M288 310 L348 248" stroke="${bg}" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+          `,
+          Cyberpunk: `
+            <rect x="82" y="72" width="260" height="270" rx="18" fill="${dominant}" opacity="0.9" />
+            <rect x="410" y="90" width="245" height="260" rx="18" fill="${secondary}" opacity="0.8" />
+            <path d="M502 110 V300" stroke="${bg}" stroke-width="4" opacity="0.8" />
+            <path d="M430 180 H630" stroke="${bg}" stroke-width="4" opacity="0.7" />
+            <path d="M120 185 L294 185" stroke="${accent}" stroke-width="5" stroke-linecap="round" opacity="0.82" />
+            <path d="M120 216 L258 216" stroke="${accent}" stroke-width="4" stroke-linecap="round" opacity="0.7" />
+            <circle cx="218" cy="145" r="62" fill="${accent}" opacity="0.7" />
+          `,
+          Coastal: `
+            <rect x="76" y="68" width="318" height="286" rx="30" fill="${dominant}" opacity="0.9" />
+            <path d="M435 310 C484 260, 560 260, 670 306" fill="none" stroke="${secondary}" stroke-width="12" stroke-linecap="round" opacity="0.8" />
+            <circle cx="550" cy="154" r="80" fill="${accent}" opacity="0.72" />
+            <path d="M456 188 C510 162, 562 184, 612 208" fill="none" stroke="${bg}" stroke-width="3" opacity="0.65" />
+            <path d="M120 230 C176 198, 214 196, 250 220" fill="none" stroke="${bg}" stroke-width="3" opacity="0.68" />
+          `,
+          Romantic: `
+            <rect x="72" y="68" width="328" height="278" rx="32" fill="${dominant}" opacity="0.9" />
+            <path d="M458 148 C486 96, 564 100, 588 160 C606 198, 590 246, 548 274 C508 300, 450 292, 432 244 C416 202, 428 170, 458 148 Z" fill="${secondary}" opacity="0.76" />
+            <circle cx="218" cy="175" r="54" fill="${accent}" opacity="0.72" />
+            <path d="M136 300 C178 258, 228 258, 270 302" fill="none" stroke="${bg}" stroke-width="3" opacity="0.72" />
+            <path d="M456 120 C498 146, 518 180, 510 218" fill="none" stroke="${bg}" stroke-width="3" opacity="0.72" />
+          `,
+          Gothic: `
+            <rect x="84" y="82" width="280" height="278" rx="18" fill="${dominant}" opacity="0.94" />
+            <path d="M432 96 L608 96 L608 310 L432 310 Z" fill="${secondary}" opacity="0.82" />
+            <path d="M470 120 L570 120 L570 300 L470 300 Z" fill="none" stroke="${accent}" stroke-width="4" opacity="0.8" />
+            <path d="M112 120 V306" stroke="${bg}" stroke-width="3" opacity="0.72" />
+            <path d="M160 120 V306" stroke="${bg}" stroke-width="3" opacity="0.6" />
+            <path d="M120 330 H340" stroke="${bg}" stroke-width="5" opacity="0.7" />
+          `,
+          Scandinavian: `
+            <rect x="92" y="92" width="290" height="242" rx="18" fill="${dominant}" opacity="0.88" />
+            <circle cx="565" cy="160" r="74" fill="${secondary}" opacity="0.8" />
+            <circle cx="610" cy="205" r="54" fill="${accent}" opacity="0.7" />
+            <path d="M120 230 H360" stroke="${bg}" stroke-width="2" opacity="0.75" />
+            <path d="M120 270 H330" stroke="${bg}" stroke-width="2" opacity="0.55" />
+            <path d="M452 120 L650 120" stroke="${bg}" stroke-width="2" opacity="0.7" />
+          `,
+          Bohemian: `
+            <rect x="72" y="86" width="312" height="272" rx="22" fill="${dominant}" opacity="0.9" />
+            <circle cx="550" cy="155" r="86" fill="${secondary}" opacity="0.78" />
+            <circle cx="620" cy="230" r="44" fill="${accent}" opacity="0.7" />
+            <path d="M432 120 L624 120" stroke="${bg}" stroke-width="2" opacity="0.8" />
+            <path d="M432 200 L626 200" stroke="${bg}" stroke-width="2" opacity="0.7" />
+            <path d="M120 170 C152 146, 188 146, 220 174" fill="none" stroke="${bg}" stroke-width="3" opacity="0.72" />
+            <path d="M120 236 C176 214, 214 216, 252 246" fill="none" stroke="${bg}" stroke-width="3" opacity="0.6" />
+          `,
+          'Clean Girl': `
+            <rect x="90" y="82" width="296" height="268" rx="28" fill="${dominant}" opacity="0.9" />
+            <circle cx="560" cy="150" r="92" fill="${secondary}" opacity="0.7" />
+            <circle cx="626" cy="212" r="52" fill="${accent}" opacity="0.7" />
+            <rect x="124" y="128" width="232" height="15" rx="8" fill="${bg}" opacity="0.5" />
+            <rect x="124" y="170" width="208" height="15" rx="8" fill="${bg}" opacity="0.35" />
+            <rect x="124" y="212" width="185" height="15" rx="8" fill="${bg}" opacity="0.28" />
+          `,
+          Custom: `
+            <rect x="90" y="86" width="310" height="274" rx="26" fill="${dominant}" opacity="0.9" />
+            <path d="M448 118 C470 160, 552 170, 610 128 L610 292 C570 312, 494 310, 440 286 Z" fill="${secondary}" opacity="0.7" />
+            <circle cx="196" cy="164" r="36" fill="${accent}" opacity="0.7" />
+            <path d="M120 250 C210 230, 300 210, 328 252" fill="none" stroke="${bg}" stroke-width="4" opacity="0.6" />
+            <path d="M432 164 C492 152, 538 160, 594 188" fill="none" stroke="${bg}" stroke-width="3" opacity="0.7" />
+          `
+        };
+
+        return shapesMap[style] || shapesMap.Coquette;
+      }
+
+      function addColorItem() {
+        if (state.colorCount >= 8) return;
+        state.colorCount += 1;
+        const nextIndex = state.colors.length;
+        const hex = presetPalettes.Rosy[nextIndex % presetPalettes.Rosy.length];
+        state.colors.push({
+          hex: normalizeHex(hex),
+          name: defaultNames[nextIndex] || `Color ${nextIndex + 1}`
+        });
+        state.percentages.push(Math.round(100 / state.colorCount));
+        const total = state.percentages.reduce((sum, value) => sum + value, 0);
+        if (total !== 100) {
+          state.percentages[state.percentages.length - 1] += 100 - total;
+        }
+        renderAll();
+      }
+
+      function resetState() {
+        state.colorCount = 4;
+        state.selectedAesthetic = 'Coquette';
+        state.colors = [
+          { hex: '#F4E9D8', name: 'Cream' },
+          { hex: '#C98F94', name: 'Dusty Rose' },
+          { hex: '#604238', name: 'Chocolate' },
+          { hex: '#A3A98C', name: 'Sage' }
+        ];
+        state.percentages = [50, 25, 15, 10];
+        state.seed = Date.now();
+        renderAll();
+      }
+
+      function renderAll() {
+        normalizeColorCount();
+        renderCountPicker();
+        renderColorFields();
+        renderPresets();
+        renderStyles();
+        renderDistribution();
+        renderPalette();
+        renderDistributionSummary();
+        generateMoodboard();
+      }
+
+      document.getElementById('generateBtn').addEventListener('click', () => {
+        state.seed += 1;
+        generateMoodboard();
+      });
+
+      document.getElementById('regenerateBtn').addEventListener('click', () => {
+        state.seed = Date.now();
+        generateMoodboard();
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', resetState);
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const svg = document.getElementById('moodboardSvg');
+        const serializer = new XMLSerializer();
+        const source = serializer.serializeToString(svg);
+        const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const image = new Image();
+
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 1500;
+          canvas.height = 900;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#f6f1ea';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+          const pngUrl = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = pngUrl;
+          link.download = `${state.selectedAesthetic.toLowerCase().replace(/\s+/g, '-')}-aesthetic.png`;
+          link.click();
+          URL.revokeObjectURL(url);
+        };
+
+        image.src = url;
+      });
+
+      renderAll();
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('hex-input')) {
+          document.activeElement.blur();
+        }
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'g') {
+          event.preventDefault();
+          state.seed += 1;
+          generateMoodboard();
+        }
+      });
+
+      const addColorButton = document.createElement('button');
+      addColorButton.type = 'button';
+      addColorButton.className = 'count-button';
+      addColorButton.textContent = '+';
+      addColorButton.title = 'Add a color';
+      addColorButton.addEventListener('click', addColorItem);
+      countPicker.appendChild(addColorButton);
+    </script>
+  </body>
+</html>
