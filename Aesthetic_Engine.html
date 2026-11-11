@@ -120,54 +120,9 @@
       }
 
       .count-picker {
-        display: grid;
-        gap: 12px;
-      }
-
-      .count-slider-wrap {
-        background: rgba(255,255,255,0.32);
-        border: 1px solid rgba(92,75,69,0.1);
-        border-radius: 16px;
-        padding: 12px 12px 10px;
-      }
-
-      .count-slider {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        height: 8px;
-        border-radius: 999px;
-        background: linear-gradient(to right, #1f1b1a 0%, #1f1b1a var(--range-percent), rgba(106,97,94,0.12) var(--range-percent), rgba(106,97,94,0.12) 100%);
-        outline: none;
-      }
-
-      .count-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        background: white;
-        border-radius: 50%;
-        border: 2px solid #1f1b1a;
-        box-shadow: 0 6px 16px rgba(61,51,46,0.18);
-        cursor: pointer;
-      }
-
-      .count-slider-meta {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 8px;
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      .count-slider-value {
-        font-weight: 700;
-        color: var(--text);
-        letter-spacing: 0.08em;
+        flex-wrap: wrap;
+        gap: 8px;
       }
 
       .count-button {
@@ -1019,51 +974,6 @@
 
       function renderCountPicker() {
         countPicker.innerHTML = '';
-
-        const sliderWrap = document.createElement('div');
-        sliderWrap.className = 'count-slider-wrap';
-
-        const slider = document.createElement('input');
-        slider.type = 'range';
-        slider.min = '2';
-        slider.max = '8';
-        slider.step = '1';
-        slider.value = String(state.colorCount);
-        slider.className = 'count-slider';
-        slider.style.setProperty('--range-percent', `${((state.colorCount - 2) / 6) * 100}%`);
-        slider.addEventListener('input', (event) => {
-          const nextCount = clampCount(event.target.value);
-          if (nextCount === state.colorCount) return;
-          state.colorCount = nextCount;
-          const previousPercentages = [...state.percentages];
-          const previousLength = previousPercentages.length;
-          while (state.percentages.length < state.colorCount) {
-            state.percentages.push(0);
-          }
-          const target = Array.from({ length: state.colorCount }, (_, index) => {
-            if (index < previousLength && previousPercentages[index] > 0) return previousPercentages[index];
-            return Math.round(100 / state.colorCount);
-          });
-          const sum = target.reduce((x, y) => x + y, 0);
-          if (sum !== 100) {
-            const adjustment = 100 - sum;
-            target[target.length - 1] += adjustment;
-          }
-          state.percentages = target.map((value) => Math.max(1, value));
-          while (state.percentages.length > state.colorCount) {
-            state.percentages.pop();
-          }
-          normalizeColorCount();
-          renderAll();
-        });
-
-        const meta = document.createElement('div');
-        meta.className = 'count-slider-meta';
-        meta.innerHTML = '<span>Color count</span><span class="count-slider-value">' + state.colorCount + '</span>';
-
-        sliderWrap.appendChild(slider);
-        sliderWrap.appendChild(meta);
-        countPicker.appendChild(sliderWrap);
 
         for (let i = 2; i <= 8; i += 1) {
           const button = document.createElement('button');
